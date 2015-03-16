@@ -1,66 +1,23 @@
 #!/usr/bin/env python
 
 import pygame, random
+from fileLoader import *
+
+images = None
+sounds = None
 
 class Explosion(object):
     def __init__(self):
-        #-----load images-----------------------------------------------
-        self.images = []
-        img = pygame.image.load("explosion01.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion02.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion03.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion04.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion05.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion06.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion07.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion08.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion09.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion10.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion11.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion12.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion13.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion14.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        img = pygame.image.load("explosion15.png").convert()
-        img.set_colorkey((0,0,0))
-        self.images.append(img)
-        
         self.explosion_list = []
-        
-        #---------load Sound Effects------------------------------------
-        
-        self.explosion_sound = pygame.mixer.Sound("explosion.ogg")
+        self.images = (images["explosion01"],images["explosion02"],images["explosion03"],
+								images["explosion04"],images["explosion05"],images["explosion06"],
+								images["explosion07"],images["explosion08"],images["explosion09"],
+								images["explosion10"],images["explosion11"],images["explosion12"],
+								images["explosion13"],images["explosion14"],images["explosion15"])
 
     def add(self,pos):
         self.explosion_list.append([pos,0]) # the second argument is for the frame number;
-        self.explosion_sound.play()
+        sounds["explosion"].play()
             
     def draw(self,screen):
         if len(self.explosion_list) > 0:
@@ -169,34 +126,7 @@ class Game(object):
         self.menu_text.append(txt)
         txt = self.menu_font.render("EXIT",True,(255,0,0))
         self.menu_text.append(txt)
-        #-----------load images-----------------------------------------
-        self.ocean_texture = pygame.image.load("ocean_texture.png").convert()
-        self.enemy_images = []
-        img = pygame.image.load("enemy_1.png").convert()
-        img.set_colorkey((0,0,0))
-        self.enemy_images.append(img)
-        img = pygame.image.load("enemy_2.png").convert()
-        img.set_colorkey((0,0,0))
-        self.enemy_images.append(img)
-        img = pygame.image.load("enemy_3.png").convert()
-        img.set_colorkey((0,0,0))
-        self.enemy_images.append(img)
-        self.missile_image = pygame.image.load("missile.png").convert()
-        self.missile_image.set_colorkey((0,0,0))
-        self.projectile_image = pygame.image.load("projectile.png").convert()
-        self.projectile_image.set_colorkey((0,0,0))
-        self.explosion_image = pygame.image.load("explosion01.png").convert()
-        self.explosion_image.set_colorkey((0,0,0))
-        self.game_over_image = pygame.image.load("game_over.png").convert()
-        self.game_over_image.set_colorkey((0,0,0))
-        self.help_image = pygame.image.load("help_image.png").convert()
-        self.help_image.set_colorkey((255,255,255))
-        self.credits_image = pygame.image.load("credits_image.png").convert()
-        self.credits_image.set_colorkey((255,255,255))
-        self.intro_image = pygame.image.load("intro_image.png").convert()
-        #--------------load Sounds--------------------------------------
-        self.plane_sound = pygame.mixer.Sound("plane.ogg")
-        #---------------------------------------------------------------
+		#---------------------------------------------------------------
         self.explosion = Explosion()
 
     def scroll_menu_up(self):
@@ -210,7 +140,7 @@ class Game(object):
 
     def start_game(self):
         self.running = True
-        self.plane_sound.play(-1) # Start the plane sound; 
+        sounds["plane"].play(-1) # Start the plane sound; 
         self.terminate_count_down = 150
         self.terminate = False
         self.score = 0
@@ -273,7 +203,7 @@ class Game(object):
         if len(hit_list) > 0 and not self.terminate:
             self.terminate = True
             self.explosion.add(self.player.rect.topleft)
-            self.plane_sound.stop()
+            sounds["plane"].stop()
             for enemy in hit_list:
                 self.explosion.add(enemy.rect.topleft)
                 self.enemy_list.remove(enemy)
@@ -282,13 +212,14 @@ class Game(object):
         if len(hit_list) > 0 and not self.terminate:
             self.terminate = True
             self.explosion.add(self.player.rect.topleft)
-            self.plane_sound.stop()
+            sounds["plane"].stop()
             for projectile in hit_list:
                 self.projectile_list.remove(projectile)
         
         if self.tick == 0:
-            enemy = Enemy(random.choice(self.enemy_images),self.projectile_list,self.tick_delay)
-            enemy.projectile_image = self.projectile_image
+            enemy = Enemy(random.choice((images["enemy1"],images["enemy2"],images["enemy3"])),
+														self.projectile_list,self.tick_delay)
+            enemy.projectile_image = images["projectile"]
             self.enemy_list.add(enemy)
             self.tick = self.tick_delay
         else:
@@ -307,7 +238,7 @@ class Game(object):
         
     def display_frame(self,screen):
         if self.running:
-            screen.blit(self.ocean_texture,(0,self.texture_increment))
+            screen.blit(images["ocean"],(0,self.texture_increment))
             self.missile_list.draw(screen)
             self.projectile_list.draw(screen)
             self.enemy_list.draw(screen)
@@ -317,15 +248,15 @@ class Game(object):
             screen.blit(self.level_text,(285,20))
             self.explosion.draw(screen)
             if self.terminate_count_down <= 90:
-                screen.blit(self.game_over_image,(100,145))
+                screen.blit(images["gameOver"],(100,145))
         elif self.display_credits_screen:
-            screen.blit(self.intro_image,(0,0))
-            screen.blit(self.credits_image,(80,100))
+            screen.blit(images["introImage"],(0,0))
+            screen.blit(images["creditsImage"],(80,100))
         elif self.display_help_screen:
-            screen.blit(self.intro_image,(0,0))
-            screen.blit(self.help_image,(70,50))
+            screen.blit(images["introImage"],(0,0))
+            screen.blit(images["helpImage"],(70,50))
         else:
-            screen.blit(self.intro_image,(0,0))
+            screen.blit(images["introImage"],(0,0))
             increment = 100
             for text in self.menu_text:
                 screen.blit(text,(135,increment))
@@ -333,7 +264,7 @@ class Game(object):
             pygame.draw.rect(screen,(0,0,255),[125,90 + self.menu_choice * 50,160,45],3)
         
     def shoot(self):
-        missile = Missile(self.player.rect.center,self.missile_image)
+        missile = Missile(self.player.rect.center,images["missile"])
         missile.speed_y = -10
         self.missile_list.add(missile)
         
@@ -349,14 +280,20 @@ def main():
     
     #-------------make the mouse cursor invisible-------------------
     pygame.mouse.set_visible(False)
-    
-    #Loop until the user clicks the close button.
+    #-----------------------------------------
     done = False
-    
+    #Loop until the user clicks the close button.
+    global images
+    global sounds 
+    try:
+		images = loadImages()
+		sounds = loadSounds()
+		#------------------------------------------------
+		game = Game() #Create the game object
+    except pygame.error:
+		done = True
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
-    #------------------------------------------------
-    game = Game()
     # -------- Main Program Loop ---------------------------------------
     while not done:
         # --- Main event loop
@@ -388,7 +325,7 @@ def main():
                 elif event.key == pygame.K_ESCAPE:
                     if game.running:
                         game.running = False
-                        game.plane_sound.stop()
+                        sounds["plane"].stop()
                     else:
                         game.display_help_screen = False
                         game.display_credits_screen = False
