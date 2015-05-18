@@ -10,10 +10,10 @@ class Explosion(object):
     def __init__(self):
         self.explosion_list = []
         self.images = (images["explosion01"],images["explosion02"],images["explosion03"],
-								images["explosion04"],images["explosion05"],images["explosion06"],
-								images["explosion07"],images["explosion08"],images["explosion09"],
-								images["explosion10"],images["explosion11"],images["explosion12"],
-								images["explosion13"],images["explosion14"],images["explosion15"])
+                        images["explosion04"],images["explosion05"],images["explosion06"],
+                        images["explosion07"],images["explosion08"],images["explosion09"],
+                        images["explosion10"],images["explosion11"],images["explosion12"],
+                        images["explosion13"],images["explosion14"],images["explosion15"])
 
     def add(self,pos):
         self.explosion_list.append([pos,0]) # the second argument is for the frame number;
@@ -86,7 +86,7 @@ class Projectile(Missile):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("fighter.png").convert()
+        self.image = pygame.image.load("files/fighter.png").convert()
         self.image.set_colorkey((0,0,0))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
@@ -114,8 +114,8 @@ class Game(object):
         self.projectile_list = pygame.sprite.Group()
         self.player_list.add(self.player)
         #---------------------------------------------------------------
-        self.font = pygame.font.Font(None,25) # text font...
-        self.menu_font = pygame.font.Font(None,40) # Menu font...
+        self.font = pygame.font.Font("FreeSansBold.ttf",20) # text font...
+        self.menu_font = pygame.font.Font("FreeSansBold.ttf",28) # Menu font...
         self.menu_text = []
         #-----------Menu Texts------------------------------------------
         txt = self.menu_font.render("START",True,(255,0,0))
@@ -217,8 +217,7 @@ class Game(object):
                 self.projectile_list.remove(projectile)
         
         if self.tick == 0:
-            enemy = Enemy(random.choice((images["enemy1"],images["enemy2"],images["enemy3"])),
-														self.projectile_list,self.tick_delay)
+            enemy = Enemy(random.choice((images["enemy1"],images["enemy2"],images["enemy3"])),self.projectile_list,self.tick_delay)
             enemy.projectile_image = images["projectile"]
             self.enemy_list.add(enemy)
             self.tick = self.tick_delay
@@ -286,12 +285,12 @@ def main():
     global images
     global sounds 
     try:
-		images = loadImages()
-		sounds = loadSounds()
-		#------------------------------------------------
-		game = Game() #Create the game object
+        images = loadImages()
+        sounds = loadSounds()
+        #-----------------------------------------------		
+        game = Game() #Create the game object
     except pygame.error:
-		done = True
+        done = True
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
     # -------- Main Program Loop ---------------------------------------
